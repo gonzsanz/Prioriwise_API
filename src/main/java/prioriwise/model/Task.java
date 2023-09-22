@@ -1,4 +1,4 @@
-package todo.model;
+package prioriwise.model;
 
 
 import jakarta.persistence.*;
