@@ -8,4 +8,5 @@ import prioriwise.model.Panel;
 public interface PanelRepository extends JpaRepository<Panel, Long> {
 
     Panel findByCode(String code);
+    Panel findByName(String title);
 }
