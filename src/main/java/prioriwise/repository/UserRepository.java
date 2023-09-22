@@ -8,4 +8,5 @@ import prioriwise.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(final String email);
+    void deleteByEmail(final String email);
 }
