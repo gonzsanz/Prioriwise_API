@@ -1,5 +1,7 @@
 package prioriwise.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import prioriwise.model.User;
 import prioriwise.repository.UserRepository;
@@ -8,9 +10,11 @@ import prioriwise.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User getUserByEmail (String email) {
@@ -22,6 +26,10 @@ public class UserService {
     }
 
     public User saveUser (User user) {
+
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 
@@ -40,13 +48,18 @@ public class UserService {
     public User updateUser (User user) {
         User oldUser = userRepository.findById(user.getUserId()).orElse(null);
         if (oldUser != null) {
+            if (!passwordEncoder.matches(user.getPassword(), oldUser.getPassword())) {
+                String encodePassword = passwordEncoder.encode(user.getPassword());
+                oldUser.setPassword(encodePassword);
+            }
             oldUser.setName(user.getName());
             oldUser.setLastname(user.getLastname());
-            oldUser.setPassword(user.getPassword());
             oldUser.setEmail(user.getEmail());
-        }
-        assert oldUser != null;
+
         return userRepository.save(oldUser);
+        }
+
+        throw new EntityNotFoundException("El usuario con ID " + user.getUserId() + " no existe.");
     }
 
 }
