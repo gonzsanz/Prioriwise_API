@@ -15,14 +15,14 @@ public class Panel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long panel_id;
+    private Long panelId;
 
     @ManyToOne
-    @JoinColumn(name = "task_id", nullable = false)
+    @JoinColumn(name = "taskId", nullable = false)
     private Task task;
 
     @ManyToMany
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private List<User> users;
 
     @Column(name = "shared", nullable = false)
